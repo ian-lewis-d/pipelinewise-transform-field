@@ -121,6 +121,7 @@ def do_transform(record: Dict,
         if is_transform_required(record, when):
 
             # Convert value to a JSON object (Dict)
+            LOGGER.debug('Convert value in field %s to Dict ?', field)
             value = json.loads(value)
 
             # transforming fields nested in value dictionary
@@ -132,7 +133,8 @@ def do_transform(record: Dict,
                     except KeyError:
                         LOGGER.error('Field path %s does not exist', field_path)
 
-                return_value = json.dumps(value)
+                return_value = value = json.dumps(value)
+                LOGGER.debug('Convert value in field %s to String after tranforms ?', field)
 
             else:
                 return_value = _transform_value(value, trans_type)
