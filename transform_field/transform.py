@@ -123,16 +123,22 @@ def do_transform(record: Dict,
             # If the field has `field_paths` but is _not_ already JSON
             # then do json.loads()/json.dumps()
             if isinstance(value, str) and field_paths:
-                LOGGER.info('Convert value in field %s to Dict ?', field)
+                #LOGGER.info('Convert value in field %s to Dict ?', field)
                 # Convert value to a JSON object (Dict)
                 value = json.loads(value)
                 temp_dict = True
+            else:
+                LOGGER.info('No JSON conversion for value: %s', value)
 
             # transforming fields nested in value dictionary
             if isinstance(value, dict) and field_paths:
                 for field_path in field_paths:
                     try:
                         field_val = get_xpath(value, field_path)
+                        # Prevent silent skipping of transforms whenever field_val == None
+                        # Consider this a permanent Hotfix.
+                        if not field_val:
+                            continue
                         set_xpath(value, field_path, _transform_value(field_val, trans_type))
                     except KeyError:
                         LOGGER.error('Field path %s does not exist', field_path)
