@@ -128,7 +128,7 @@ def do_transform(record: Dict,
                 value = json.loads(value)
                 temp_dict = True
             else:
-                LOGGER.info('No JSON conversion for value: %s', value)
+                LOGGER.debug('No String to JSON conversion for field: %s', field)
 
             # transforming fields nested in value dictionary
             if isinstance(value, dict) and field_paths:
